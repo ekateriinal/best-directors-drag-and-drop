@@ -23,13 +23,11 @@ createList();
 
 //Insert list items into DOM
 function createList() {
-    [...bestDirectors]
-    .map(a => ({ value: a, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(a => a.value)
+    [...bestDirectors] //copied array
+    .map(a => ({ value: a, sort: Math.random() })) //changed to the object with a value and sort
+    .sort((a, b) => a.sort - b.sort) // sorted
+    .map(a => a.value) // turned back to an array of strings
     .forEach((person, index) => {
-        console.log(person);
-
         const listItem = document.createElement('li'); //created list item
         listItem.setAttribute('data-index', index); //setting attribute
 
