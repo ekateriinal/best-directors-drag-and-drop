@@ -24,14 +24,14 @@ createList();
 //Insert list items into DOM
 function createList() {
     [...bestDirectors] //copied array
-    .map(a => ({ value: a, sort: Math.random() })) //changed to the object with a value and sort
-    .sort((a, b) => a.sort - b.sort) // sorted
-    .map(a => a.value) // turned back to an array of strings
-    .forEach((person, index) => {
-        const listItem = document.createElement('li'); //created list item
-        listItem.setAttribute('data-index', index); //setting attribute
+        .map(a => ({ value: a, sort: Math.random() })) //changed to the object with a value and sort
+        .sort((a, b) => a.sort - b.sort) // sorted
+        .map(a => a.value) // turned back to an array of strings
+        .forEach((person, index) => {
+            const listItem = document.createElement('li'); //created list item
+            listItem.setAttribute('data-index', index); //setting attribute
 
-        listItem.innerHTML = `
+            listItem.innerHTML = `
         <span class="number">${index + 1}</span>
         <div class="draggable" draggable="true">
         <p class="person-name">${person}</p>
@@ -39,8 +39,57 @@ function createList() {
         </div>
         `;
 
-        listItems.push(listItem);
+            listItems.push(listItem);
 
-        draggableList.appendChild(listItem);
-    });
+            draggableList.appendChild(listItem);
+        });
+
+    addEventListeners();
 }
+
+function dragStart() {
+    dragStartIndex = +this.closest('li').getAttribute('data-index'); //('+' makes it a number)
+}
+
+function dragEnter() {
+    this.classList.add('over');
+}
+
+function dragLeave() {
+    this.classList.remove('over');
+}
+
+function dragOver(e) {
+    e.preventDefault();
+}
+
+function dragDrop() {
+    const dragEndIndex = +this.getAttribute('data-index');
+    swapItems(dragStartIndex, dragEndIndex);
+
+    this.classList.remove('over');
+}
+
+function swapItems(fromIndex, toIndex) {
+    const itemOne = listItems[fromIndex].querySelector('.draggable');
+    const itemTwo = listItems[toIndex].querySelector('.draggable');
+
+    listItems[fromIndex].appendChild(itemTwo);
+    listItems[toIndex].appendChild(itemOne);
+}
+
+function addEventListeners() {
+    const draggables = document.querySelectorAll('.draggable');
+    const dragListItems = document.querySelectorAll('.draggable-list li');
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', dragStart); //('a', and when 'a' happens i call function dragStart)
+    });
+
+    dragListItems.forEach(item => {
+        item.addEventListener('dragover', dragOver);
+        item.addEventListener('drop', dragDrop);
+        item.addEventListener('dragenter', dragEnter);
+        item.addEventListener('dragleave', dragLeave);
+    });
+};
